@@ -1,8 +1,8 @@
-const { parseFragment } = require('parse5');
+const {parseFragment} = require('parse5');
 
-function pageToAlgoliaRecord({ node }, baseUrl) {
-  const { htmlAst, mdxAST, content, ...rest } = node;
-  let currentRec = { text: '' };
+function pageToAlgoliaRecord({node}, baseUrl) {
+  const {htmlAst, mdxAST, content, ...rest} = node;
+  let currentRec = {text: ''};
   const recsToSave = [];
   const headTags = ['h1', 'h2', 'h3', 'h4'];
 
@@ -25,21 +25,22 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
 
   function buildLink(value, theNode) {
     const slugHead = value.replace(/\./g, '').replace(/ /g, '-').toLowerCase();
-    return `${baseUrl}${theNode?.fields?.slug || theNode?.slug || ''
-      }#${slugHead}`;
+    return `${baseUrl}${
+      theNode?.fields?.slug || theNode?.slug || ''
+    }#${slugHead}`;
   }
 
   function splitForHeader(parent, value, theRec) {
     // TODO fix nested elements in headers (like inlineCode)
 
     //removing headers that are "smaller" than the current one, eg if parent === h2 remove h3, h4 etc...
-    const headz = { ...theRec.headings } || {};
+    const headz = {...theRec.headings} || {};
 
     for (let i = headTags.indexOf(parent); i < headTags.length; i++) {
       delete headz[headTags[i]];
     }
 
-    const recToPush = { ...theRec };
+    const recToPush = {...theRec};
     recToPush.link = buildLink(value, node);
 
     headz[parent] = value;
@@ -47,7 +48,7 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
       recToPush.headings = {};
     }
 
-    return [recToPush, { text: '', headings: headz }];
+    return [recToPush, {text: '', headings: headz}];
   }
 
   function isHeader(parent) {
@@ -56,7 +57,7 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
 
   // TODO: extract code blocks into codeSnippet key
   function parseElem(parent, elem, pageType) {
-    const { type, tagName, value, children, nodeName, childNodes } = elem;
+    const {type, tagName, value, children, nodeName, childNodes} = elem;
 
     if (nodeName === '#text' || type === 'inlineCode' || type === 'text') {
       if (isHeader(parent) === false) {
@@ -72,10 +73,10 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
             : splitForHeader(parent, value, currentRec);
 
         // and we add rec to array for saving
-        recsToSave.push({ ...recToPush });
+        recsToSave.push({...recToPush});
 
         // reset with current headings state
-        currentRec = { ...freshRec };
+        currentRec = {...freshRec};
       }
     } else if (children || childNodes) {
       // drill further down
@@ -99,7 +100,7 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
   }
 
   function getRecsAndReset(node, recs) {
-    const { id, frontmatter, fields, slug, categories, ...rest } = node;
+    const {id, frontmatter, fields, slug, categories, ...rest} = node;
 
     const categs =
       categories?.nodes?.map(node => node.name) || categories || [];
@@ -119,10 +120,10 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
     const type = docset
       ? 'docs'
       : baseUrl.includes('odyssey')
-        ? 'odyssey'
-        : baseUrl.includes('blog')
-          ? 'blog'
-          : '';
+      ? 'odyssey'
+      : baseUrl.includes('blog')
+      ? 'blog'
+      : '';
 
     let url = baseUrl;
     if (type === 'blog') {
@@ -159,7 +160,7 @@ function pageToAlgoliaRecord({ node }, baseUrl) {
 
   // pushing the last record before starting the new page, if not empty
   if (currentRec.text.length) {
-    recsToSave.push({ ...currentRec });
+    recsToSave.push({...currentRec});
   }
 
   return getRecsAndReset(rest, recsToSave);
@@ -172,7 +173,7 @@ function parsePages(pages, baseUrl) {
 }
 
 exports.parse = function ({
-  data: { pagesMD = [], pagesMDX = [], pagesWP = [] },
+  data: {pagesMD = [], pagesMDX = [], pagesWP = []},
   baseUrl = ''
 }) {
   try {
