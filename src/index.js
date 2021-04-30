@@ -41,14 +41,16 @@ function pageToAlgoliaRecord({node}, baseUrl) {
     }
 
     const recToPush = {...theRec};
-    recToPush.link = buildLink(value, node);
 
     headz[parent] = value;
     if (!recToPush.headings) {
       recToPush.headings = {};
     }
 
-    return [recToPush, {text: '', headings: headz}];
+    return [
+      recToPush,
+      {text: '', headings: headz, link: buildLink(value, node)}
+    ];
   }
 
   function isHeader(parent) {
