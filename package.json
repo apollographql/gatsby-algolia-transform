@@ -1,8 +1,8 @@
 {
   "name": "gatsby-algolia-transform",
   "version": "1.0.0",
-  "description": "parse md and mdx gatsby pages to index to algolia, splitting records per headers.",
-  "main": "lib/index.js",
+  "description": "Parse md and mdx gatsby pages to index to algolia, splitting records per headers",
+  "main": "index.js",
   "private": true,
   "scripts": {
     "test": "jest",
@@ -18,25 +18,16 @@
   },
   "author": "Raphael Terrier",
   "license": "ISC",
-  "babel": {
-    "presets": [
-      "@babel/env"
-    ]
-  },
   "devDependencies": {
-    "@babel/cli": "^7.13.16",
-    "@babel/core": "^7.13.16",
-    "@babel/preset-env": "^7.13.15",
     "@trevorblades/eslint-config": "^7.2.2",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.24.0",
+    "eslint": "^7.27.0",
     "jest": "^26.6.3"
   },
   "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "@trevorblades"
-    ]
+    "extends": "@trevorblades",
+    "parserOptions": {
+      "ecmaVersion": 2020
+    }
   },
   "dependencies": {
     "parse5": "^6.0.1"
